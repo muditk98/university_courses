@@ -1,0 +1,25 @@
+{
+  "name": "university_courses",
+  "version": "1.0.0",
+  "description": "VAP mid term mini project",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thewusspuss/university_courses.git"
+  },
+  "keywords": [
+    "REST",
+    "node.js",
+    "express",
+    "HTTP"
+  ],
+  "author": "Mudit Kapoor 16BLC1100",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/thewusspuss/university_courses/issues"
+  },
+  "homepage": "https://github.com/thewusspuss/university_courses#readme"
+}
