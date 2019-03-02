@@ -121,3 +121,8 @@ class University {
 		this.map.push(new CourseStudentMap(course_id, student_id))
 	}
 }
+
+exports.Course = Course
+exports.Student = Student
+exports.CourseStudentMap = CourseStudentMap
+exports.University = University
