@@ -12,6 +12,9 @@ class Course {
 	deactivate() {
 		this._status = false
 	}
+	getStatus() {
+		return this._status
+	}
 }
 
 class Student {
@@ -62,7 +65,7 @@ class University {
 	}
 	addCourse(course) {
 		const schema = Joi.object().keys({
-			id: Joi.number().positive().required(),
+			id: Joi.string().regex('^[1-9]\d{,3}$').required(),
 			name: Joi.string().required(),
 		})
 		let result = Joi.validate(course, schema, {presence: 'required'})
@@ -83,9 +86,32 @@ class University {
 			value.id !== id
 		})
 	}
+	filterCourse(course) {
+		if (course.id == null) {
+			course.id = ''
+		}
+		if (course.name == null) {
+			course.name = ''
+		}
+		return this.courses.filter(value => {
+			return new RegExp(course.id.trim()).test(value.id) && new RegExp(course.name.trim()).test(value.name)
+		})
+	}
+	activateCourse(id) {
+		let courses = this.filterCourse(new Course(id, ''))
+		if (courses.length) {
+			courses[0].activate
+		}
+	}
+	deactivateCourse(id) {
+		let courses = this.filterCourse(new Course(id, ''))
+		if (courses.length) {
+			courses[0].deactivate
+		}
+	}
 	addStudent(student) {
 		const schema = Joi.object().keys({
-			id: Joi.number().positive().required(),
+			id: Joi.string().regex('^[1-9]\d{,3}$').required(),
 			name: Joi.string().required(),
 		})
 		let result = Joi.validate(student, schema, {
@@ -108,6 +134,17 @@ class University {
 			value.id !== id
 		})
 	}
+	filterStudent(student) {
+		if (student.id == null) {
+			student.id = ''
+		}
+		if (student.name == null) {
+			student.name = ''
+		}
+		return this.students.filter(value => {
+			return new RegExp(student.id.trim()).test(value.id) && new RegExp(student.name.trim()).test(value.name)
+		})
+	}
 	addCourseStudentMap(course_id, student_id) {
 		if (!this.courseExists(course_id)) {
 			throw new Error('Course does not exist')
@@ -118,7 +155,23 @@ class University {
 		if (this.mapExists(course_id, student_id)) {
 			throw new Error('Student already registered under this course')
 		}
+		let course = new Course(course_id, '')
+		if (this.filterCourse(course)[0].getStatus() == true) {
+			throw new Error('Cannot enroll for active course')
+		}
 		this.map.push(new CourseStudentMap(course_id, student_id))
+	}
+	filterMap(csmap) {
+		if (csmap.course_id == null) {
+			csmap.course_id = ''
+		}
+		if (csmap.student_id == null) {
+			csmap.student_id = ''
+		}
+		return this.map.filter(value => {
+			return 	new RegExp(csmap.course_id.trim()).test(value.course_id) &&
+					new RegExp(csmap.student_id.trim()).test(value.student_id)
+		})
 	}
 }
 
