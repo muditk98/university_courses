@@ -46,20 +46,19 @@ class University {
 		]
 	}
 	courseExists(id) {
-		for (let i = 0; i < this.courses.length; i++) {
-			if (this.courses[i].id === id) {
-				return true
-			}
-		}
-		return false
+		return this.courses.some(course => {
+			return course.id === id
+		})
 	}
 	studentExists(id) {
-		for (let i = 0; i < this.students.length; i++) {
-			if (this.students[i].id === id) {
-				return true
-			}
-		}
-		return false
+		return this.students.some(student => {
+			return student.id === id
+		})
+	}
+	mapExists(course_id, student_id) {
+		return this.map.some(value => {
+			return value.course_id === course_id && value.student_id === student_id
+		})
 	}
 	addCourse(course) {
 		const schema = Joi.object().keys({
@@ -71,7 +70,7 @@ class University {
 			throw result.error
 		}
 		if (!this.courseExists(id)) {
-            this.courses.push(course)
+			this.courses.push(course)
 		} else {
 			throw new Error('Course with this id already exists')
 		}
@@ -108,5 +107,17 @@ class University {
 		this.students = this.students.filter(value => {
 			value.id !== id
 		})
+	}
+	addCourseStudentMap(course_id, student_id) {
+		if (!this.courseExists(course_id)) {
+			throw new Error('Course does not exist')
+		}
+		if (!this.studentExists(student_id)) {
+			throw new Error('Student does not exist')
+		}
+		if (this.mapExists(course_id, student_id)) {
+			throw new Error('Student already registered under this course')
+		}
+		this.map.push(new CourseStudentMap(course_id, student_id))
 	}
 }
