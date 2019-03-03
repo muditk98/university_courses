@@ -93,6 +93,31 @@ app.post('/student', (req, res) => {
 	}
 })
 
+app.get('/course/:id', (req, res) => {
+	try {
+		let course = new university.Course(req.params.id, '')
+		// res.render('list_view', {
+		// 	cols: ['Course Id', 'Course Name', 'Activated'],
+		// 	data: app.locals.university.filterCourse(course)
+		// })
+		res.send(app.locals.university.filterCourse(course))
+	} catch (error) {
+		res.send(error)
+	}
+}) 
+app.get('/student/:id', (req, res) => {
+	try {
+		let student = new university.Student(req.params.id, '')
+		// res.render('list_view', {
+		// 	cols: ['Student Id', 'Student Name'],
+		// 	data: app.locals.university.filterStudent(student)
+		// })
+		res.send(app.locals.university.filterStudent(student))
+	} catch (error) {
+		res.send(error)
+	}
+})
+
 app.get('/map', (req, res) => {
 	res.render('map')
 })
