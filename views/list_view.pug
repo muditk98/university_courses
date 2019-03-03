@@ -1,0 +1,25 @@
+html
+	head
+		link(rel="stylesheet", href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous")
+		link(rel="stylesheet", href="style.css")
+	body
+		a(href="/home") Home
+		br
+		a(href="/course") Course Page
+		br
+		a(href="/student") Student Page
+		br
+		a(href="/map") Course Student Mapping
+		table
+			tr
+				//- var col = #{cols}
+				each column in cols
+					th= column
+			//- var dat = #{data}
+			each datum in data
+				tr
+					//- var vals = 
+					for val in Object.values(datum)
+						td= val
+
+					

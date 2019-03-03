@@ -34,45 +34,46 @@ class CourseStudentMap {
 class University {
 	constructor() {
 		this.courses = [
-			new Course(1001, 'JavaScript'),
-			new Course(1002, 'LinearAlgebra'),
-			new Course(1003, 'Calculus-3')
+			new Course("1001", 'JavaScript'),
+			new Course("1002", 'LinearAlgebra'),
+			new Course("1003", 'Calculus-3')
 		]
 		this.students = [
-			new Student(2001, 'Mudit Kapoor'),
-			new Student(2002, 'Acerola Orion')
+			new Student("2001", 'Mudit Kapoor'),
+			new Student("2002", 'Acerola Orion')
 		]
 		this.map = [
-			new CourseStudentMap(1001, 2001),
-			new CourseStudentMap(1001, 2002),
-			new CourseStudentMap(1002, 2001)
+			new CourseStudentMap("1001", "2001"),
+			new CourseStudentMap("1001", "2002"),
+			new CourseStudentMap("1002", "2001")
 		]
 	}
 	courseExists(id) {
 		return this.courses.some(course => {
-			return course.id === id
+			return course.id == id
 		})
 	}
 	studentExists(id) {
 		return this.students.some(student => {
-			return student.id === id
+			return student.id == id
 		})
 	}
 	mapExists(course_id, student_id) {
 		return this.map.some(value => {
-			return value.course_id === course_id && value.student_id === student_id
+			return value.course_id == course_id && value.student_id == student_id
 		})
 	}
 	addCourse(course) {
 		const schema = Joi.object().keys({
-			id: Joi.string().regex('^[1-9]\d{,3}$').required(),
+			id: Joi.string().regex(/^[1-9]\d{0,3}$/).required(),
 			name: Joi.string().required(),
+			_status: Joi.bool()
 		})
 		let result = Joi.validate(course, schema, {presence: 'required'})
 		if (result.error) {
 			throw result.error
 		}
-		if (!this.courseExists(id)) {
+		if (!this.courseExists(course.id)) {
 			this.courses.push(course)
 		} else {
 			throw new Error('Course with this id already exists')
@@ -80,10 +81,10 @@ class University {
 	}
 	deleteCourse(id) {
 		this.map = this.map.filter(value => {
-			value.course_id !== id
+			return value.course_id != id
 		})
 		this.courses = this.courses.filter(value => {
-			value.id !== id
+			return value.id != id
 		})
 	}
 	filterCourse(course) {
@@ -94,24 +95,28 @@ class University {
 			course.name = ''
 		}
 		return this.courses.filter(value => {
-			return new RegExp(course.id.trim()).test(value.id) && new RegExp(course.name.trim()).test(value.name)
+			return new RegExp(course.id.trim(), 'i').test(value.id) && new RegExp(course.name.trim(), 'i').test(value.name)
 		})
 	}
 	activateCourse(id) {
 		let courses = this.filterCourse(new Course(id, ''))
-		if (courses.length) {
-			courses[0].activate
+		if (!courses.length) {
+			throw new Error('Invalid course id')
 		}
+		if (this.filterMap(new CourseStudentMap(id, '')).length < 5) {
+			throw new Error('Cannot activate course with less than 5 students')
+		}
+		courses[0].activate()
 	}
 	deactivateCourse(id) {
 		let courses = this.filterCourse(new Course(id, ''))
 		if (courses.length) {
-			courses[0].deactivate
+			courses[0].deactivate()
 		}
 	}
 	addStudent(student) {
 		const schema = Joi.object().keys({
-			id: Joi.string().regex('^[1-9]\d{,3}$').required(),
+			id: Joi.string().regex(/^[1-9]\d{0,3}$/).required(),
 			name: Joi.string().required(),
 		})
 		let result = Joi.validate(student, schema, {
@@ -120,7 +125,7 @@ class University {
 		if (result.error) {
 			throw result.error
 		}
-		if (!this.studentExists(id)) {
+		if (!this.studentExists(student.id)) {
 			this.students.push(student)
 		} else {
 			throw new Error('Student with this id already exists')
@@ -128,10 +133,10 @@ class University {
 	}
 	deleteStudent(id) {
 		this.map = this.map.filter(value => {
-			value.student_id !== id
+			return value.student_id != id
 		})
 		this.students = this.students.filter(value => {
-			value.id !== id
+			return value.id != id
 		})
 	}
 	filterStudent(student) {
@@ -142,7 +147,7 @@ class University {
 			student.name = ''
 		}
 		return this.students.filter(value => {
-			return new RegExp(student.id.trim()).test(value.id) && new RegExp(student.name.trim()).test(value.name)
+			return new RegExp(student.id.trim(), 'i').test(value.id) && new RegExp(student.name.trim(), 'i').test(value.name)
 		})
 	}
 	addCourseStudentMap(course_id, student_id) {
@@ -161,6 +166,11 @@ class University {
 		}
 		this.map.push(new CourseStudentMap(course_id, student_id))
 	}
+	deleteCourseStudentMap(course_id, student_id) {
+		this.map = this.map.filter(value => {
+			return value.course_id != course_id && value.student_id != student_id
+		})
+	}
 	filterMap(csmap) {
 		if (csmap.course_id == null) {
 			csmap.course_id = ''
@@ -169,8 +179,8 @@ class University {
 			csmap.student_id = ''
 		}
 		return this.map.filter(value => {
-			return 	new RegExp(csmap.course_id.trim()).test(value.course_id) &&
-					new RegExp(csmap.student_id.trim()).test(value.student_id)
+			return 	new RegExp(csmap.course_id.trim(), 'i').test(value.course_id) &&
+					new RegExp(csmap.student_id.trim(), 'i').test(value.student_id)
 		})
 	}
 }

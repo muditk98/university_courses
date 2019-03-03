@@ -6,6 +6,7 @@ app.use(express.urlencoded({
 	extended: true
 }));
 app.use(express.json());
+app.use(express.static('./css'))
 
 app.locals.university = new university.University()
 
@@ -13,7 +14,7 @@ app.set('views', './views');
 app.set('view engine', 'pug');
 
 
-app.get('/', (req, res) => {
+app.get(['/', '/home'], (req, res) => {
 	res.render('home')
 })
 
@@ -35,7 +36,10 @@ app.post('/course', (req, res) => {
 			})
 		} else if (req.body.action == 'view') {
 			let course = new university.Course(req.body.id, req.body.name)
-			res.render('list_view', app.locals.university.filterCourse(course))
+			res.render('list_view', {
+				cols: ['Course Id', 'Course Name', 'Activated'],
+				data: app.locals.university.filterCourse(course)
+			})
 		} else if (req.body.action == 'activate') {
 			app.locals.university.activateCourse(req.body.id)
 			res.render('course', {
@@ -47,10 +51,12 @@ app.post('/course', (req, res) => {
 				message: 'Course successfully deactivated'
 			})
 		} else {
-			res.render('error', new Error('Invalid action'))
+			throw new Error('Invalid action')
 		}
 	} catch (error) {
-		res.render('error', error)
+		res.render('course', {
+			message: "Error: " + error.message
+		})
 	}
 })
 
@@ -73,12 +79,17 @@ app.post('/student', (req, res) => {
 			})
 		} else if (req.body.action == 'view') {
 			let student = new university.Student(req.body.id, req.body.name)
-			res.render('list_view', app.locals.university.filterStudent(student))
+			res.render('list_view', {
+				cols: ['Student Id', 'Student Name'],
+				data: app.locals.university.filterStudent(student)
+			})
 		} else {
-			res.render('error', new Error('Invalid action'))
+			throw new Error('Invalid action')
 		}
 	} catch (error) {
-		res.render('error', error)
+		res.render('student', {
+			message: "Error: " + error.message
+		})
 	}
 })
 
@@ -87,10 +98,29 @@ app.get('/map', (req, res) => {
 })
 app.post('/map', (req, res) => {
 	try {
-		let csmap = new university.CourseStudentMap(req.body.course_id, req.body.student_id)
-		res.render('list_view', app.locals.university.filterMap(csmap))
+		if (req.body.action == 'add') {
+			app.locals.university.addCourseStudentMap(req.body.course_id, req.body.student_id)
+			res.render('map', {
+				message: 'Student successfully registered to course'
+			})
+		} else if (req.body.action == 'delete') {
+			app.locals.university.deleteCourseStudentMap(req.body.course_id, req.body.student_id)
+			res.render('map', {
+				message: 'Student sucessfully deregistered from course'
+			})
+		} else if (req.body.action == 'view') {
+			let csmap = new university.CourseStudentMap(req.body.course_id, req.body.student_id)
+			res.render('list_view', {
+				cols: ['Course Id', 'Student Id'],
+				data: app.locals.university.filterMap(csmap)
+			})
+		} else {
+			throw new Error('Invalid action')
+		}
 	} catch (error) {
-		res.render('error', error)
+		res.render('map', {
+			message: "Error: " + error.message
+		})
 	}
 })
 

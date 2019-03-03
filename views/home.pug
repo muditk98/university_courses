@@ -1,7 +1,18 @@
 html
+	head
+		link(rel="stylesheet", href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous")
+		link(rel="stylesheet", href="style.css")
 	body
 		h1 University Course Management System
+		br
 		h2 Mudit Kapoor 16BLC1100
+		br
 		a(href="/course") Course Page
+		br
 		a(href="/student") Student Page
+		br
 		a(href="/map") Course Student Mapping
+
+		p Only 'add' actions require names in their input fields. Other actions need only id
+		p All 'view' actions can take regex as their input, and search both id and name (case insensitive).
+		p If both are provided then the results are combined using 'AND' logic

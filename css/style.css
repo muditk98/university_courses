@@ -1,0 +1,27 @@
+body {
+	padding: 10%;
+}
+input {
+	padding: 0.2em;
+	height: 100%;
+}
+option {
+	text-align: center;
+	height: 100%;
+}
+input[type=submit] {
+	text-align: center;
+	height: 100%;
+	padding-left: 1%;
+	padding-right: 1%;
+}
+select {
+	height: 2em;
+	height: 100%;
+	text-align: center;
+}
+
+form {
+	height: 2.5em;
+}
+

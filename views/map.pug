@@ -1,0 +1,21 @@
+html
+	head
+		link(rel="stylesheet", href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous")
+		link(rel="stylesheet", href="style.css")
+	body
+		a(href="/home") Home
+		br
+		a(href="/course") Course Page
+		br
+		a(href="/student") Student Page
+
+		h1 Course Student Mapping
+		form(action="/map", method='post')
+			input(type="text", name="course_id", placeholder="Course Id")
+			input(type="text", name="student_id", placeholder="Student Id")
+			select(name="action")
+				option(value="add") add
+				option(value="delete") delete
+				option(value="view") view
+			input(type="submit", value="Submit")
+		p #{message}
