@@ -25,3 +25,8 @@ form {
 	height: 2.5em;
 }
 
+td, th {
+	padding: 0.5em;
+	/* margin: 4em; */
+}
+

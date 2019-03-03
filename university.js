@@ -167,6 +167,10 @@ class University {
 		this.map.push(new CourseStudentMap(course_id, student_id))
 	}
 	deleteCourseStudentMap(course_id, student_id) {
+		let courses = this.filterCourse(new Course(course_id, ''))
+		if (courses.length && courses[0].getStatus()) {
+			throw new Error('Cannot deregister after course has started')
+		}
 		this.map = this.map.filter(value => {
 			return value.course_id != course_id && value.student_id != student_id
 		})
